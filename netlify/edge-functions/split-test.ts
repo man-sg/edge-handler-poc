@@ -63,6 +63,7 @@ export default async (request: Request, context: Context) => {
         bucket = b.url;
         hasBucket = false;
       }
+
       totalWeighting += b.weight * weightingMultiplier;
     });
   }
