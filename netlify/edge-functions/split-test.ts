@@ -23,7 +23,7 @@ export default async (request: Request, context: Context) => {
     return context.next()
   }
 
-  console.log("deploy preview or master branch :", requestUrl.origin)
+  console.log("PRODUCTION :", requestUrl.origin)
   //Ensure weighting adds up to 1
   const totalWeighting = buckets.reduce(
     (tot, bucket) => tot + bucket.weight,
