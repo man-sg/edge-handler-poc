@@ -20,7 +20,7 @@ export default async (request: Request, context: Context) => {
 
   if (requestUrl.origin.includes("deploy-preview") || requestUrl.origin.includes("master--")) {
     console.log("deploy preview or master branch")
-    return context.next()
+    return context.next();
   }
 
   console.log("PRODUCTION :", requestUrl.origin)
