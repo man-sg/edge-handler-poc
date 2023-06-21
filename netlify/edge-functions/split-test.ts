@@ -19,9 +19,11 @@ export default async (request: Request, context: Context) => {
   const requestUrl = new URL(request.url);
 
   if (requestUrl.origin.includes("deploy-preview") || requestUrl.origin.includes("master--")) {
+    console.log("deploy preview or master branch")
     return context.next()
   }
 
+  console.log("deploy preview or master branch :", requestUrl.origin)
   //Ensure weighting adds up to 1
   const totalWeighting = buckets.reduce(
     (tot, bucket) => tot + bucket.weight,
