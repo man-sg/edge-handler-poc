@@ -92,10 +92,15 @@ export default async (request: Request, context: Context) => {
     proxyResponse = await fetch(url, {
       headers: {
         "If-None-Match": ifNoneMatch
-      }
+      },
+      redirect: "manual"
     });
   } else {
-    proxyResponse = await fetch(url)
+    proxyResponse = await fetch(url, {
+      redirect: "manual"
+    })
   }
+
+  console.log(proxyResponse);
   return new Response(proxyResponse.body, proxyResponse);
 };

@@ -1,3 +1,10 @@
 [[context.production.edge_functions]]
     path = '/*'
     function = 'split-test'
+
+
+[[redirects]]
+  from = "/old-path"
+  to = "/"
+  status = 301
+  force = true
