@@ -86,21 +86,18 @@ export default async (request: Request, context: Context) => {
   // Will generate an url like https://test-split-test--bilka.netlify.app/[pathname]
   const url = `${bucket}${requestUrl.pathname}`;
 
-  let proxyResponse;
+  const fetchOptions: RequestInit = {
+    redirect: "manual"
+  };
+
   const ifNoneMatch = request.headers.get("If-None-Match");
+
   if (ifNoneMatch) {
-    proxyResponse = await fetch(url, {
-      headers: {
-        "If-None-Match": ifNoneMatch
-      },
-      redirect: "manual"
-    });
-  } else {
-    proxyResponse = await fetch(url, {
-      redirect: "manual"
-    })
+    fetchOptions.headers = {
+      "If-None-Match": ifNoneMatch
+    };
   }
 
-  console.log(proxyResponse);
+  const proxyResponse = await fetch(url, fetchOptions);
   return new Response(proxyResponse.body, proxyResponse);
 };
