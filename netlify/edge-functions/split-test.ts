@@ -13,17 +13,15 @@ export default async (request: Request, context: Context) => {
 
   //If environment variable not set return standard pages
   if (!buckets || !request) {
-    return context.next();
+    return;
   }
 
   const requestUrl = new URL(request.url);
 
   if (requestUrl.origin.includes("deploy-preview") || requestUrl.origin.includes("master--")) {
-    console.log("deploy preview or master branch")
-    return context.next()
+    return;
   }
 
-  console.log("PRODUCTION :", requestUrl.origin)
   //Ensure weighting adds up to 1
   const totalWeighting = buckets.reduce(
     (tot, bucket) => tot + bucket.weight,
@@ -79,13 +77,25 @@ export default async (request: Request, context: Context) => {
 
   // if the assigned bucket is master, dont do proxy request.
   if (bucket == buckets[0].url) {
-    return context.next();
+    return;
   }
+
+
 
   //Generate full proxy url getting base url from bucket and path from incoming request.
   // Will generate an url like https://test-split-test--bilka.netlify.app/[pathname]
   const url = `${bucket}${requestUrl.pathname}`;
 
-  const proxyResponse = await fetch(url);
+  let proxyResponse;
+  const ifNoneMatch = request.headers.get("If-None-Match");
+  if (ifNoneMatch) {
+    proxyResponse = await fetch(url, {
+      headers: {
+        "If-None-Match": ifNoneMatch
+      }
+    });
+  } else {
+    proxyResponse = await fetch(url)
+  }
   return new Response(proxyResponse.body, proxyResponse);
 };
